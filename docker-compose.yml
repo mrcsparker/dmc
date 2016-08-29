@@ -3,6 +3,7 @@ services:
 
   nzbget:
     container_name: nzbget
+    hostname: nzbget
     image: linuxserver/nzbget
     env_file: env
     restart: always
@@ -15,6 +16,7 @@ services:
 
   sonarr:
     container_name: sonarr
+    hostname: sonarr
     image: linuxserver/sonarr
     env_file: env
     restart: always
@@ -31,6 +33,7 @@ services:
 
   couchpotato:
     container_name: couchpotato
+    hostname: couchpotato
     image: linuxserver/couchpotato
     env_file: env
     restart: always
@@ -46,6 +49,7 @@ services:
 
   plex:
     container_name: plex
+    hostname: plex
     image: linuxserver/plex:latest
     restart: always
     network_mode: "host"
@@ -97,6 +101,7 @@ services:
 
   htpcmanager:
     container_name: htpcmanager
+    hostname: htpcmanager
     image: linuxserver/htpcmanager
     restart: always
     env_file: env
@@ -108,4 +113,72 @@ services:
       - couchpotato
       - plex
       - plexpy
+    links:
+      - nzbget
+      - sonarr
+      - couchpotato
+      - plex
+      - plexpy
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./data/config/htpcmanager:/config
+      - ./data/media:/media:ro
+
+  pydio:
+    container_name: pydio
+    hostname: pydio
+    image: linuxserver/pydio
+    restart: always
+    env_file: env
+    ports:
+      - "443:443"
+    volumes:
+      - ./data/config/pydio:/config
+      - ./data/media:/data
+
+  plexrequests:
+    container_name: plexrequests
+    hostname: plexrequests
+    image: lsiodev/plexrequests
+    restart: always
+    env_file: env
+    ports:
+      - "3000:3000"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./data/config/plexrequests:/config
+
+  transmission:
+    container_name: transmission
+    hostname: transmission
+    image: linuxserver/transmission
+    restart: always
+    env_file: env
+    ports:
+      - "9091:9091"
+      - "51413:51413"
+      - "51413:51413/udp"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./data/config/transmission:/config
+      - ./data/downloads/transmission:/downloads
+      - ./data/watch/transmission:/watch
+
+  samba:
+    container_name: samba
+    hostname: samba
+    image: dperson/samba
+    restart: always
+    env_file: env
+    ports:
+      - "139:139"
+      - "445:445"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./data:/mount
+    command:
+      - -s
+      - media;/mount/media;yes;no;yes;all
+      - watch;/mount/watch;yes;no;yes;all
+      - downloads;/mount/downloads;yes;no;yes;all
 

@@ -4,6 +4,7 @@ sudo apt-get update
 
 sudo apt-get install -y git
 sudo apt-get install -y git-core
+sudo apt-get install -y curl
 
 # Docker setup
 
@@ -16,8 +17,16 @@ sudo apt-get update
 
 sudo apt-get install linux-image-extra-$(uname -r) linux-image-extra-virtual
 
-sudo apt-get install docker-engine
+sudo apt-get install -y docker-engine
 
 sudo service docker start
 
+sudo curl -L https://github.com/docker/compose/releases/download/1.8.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
 sudo systemctl enable docker
+
+sudo groupadd docker
+
+# TODO: make it the current user
+sudo usermod -aG docker vagrant
