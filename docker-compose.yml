@@ -4,9 +4,8 @@ services:
   nzbget:
     container_name: nzbget
     image: linuxserver/nzbget
-    environment:
-      - PUID=1001
-      - PGID=1000
+    env_file: env
+    restart: always
     ports:
       - 6789:6789
     volumes:
@@ -15,28 +14,24 @@ services:
   sonarr:
     container_name: sonarr
     image: linuxserver/sonarr
+    env_file: env
     restart: always
-    environment:
-      - PUID=1001
-      - PGID=1000
     ports:
       - 8989:8989
+    depends_on:
+      - nzbget
     volumes:
       - /etc/localtime:/etc/localtime:ro
 
   couchpotato:
     container_name: couchpotato
     image: linuxserver/couchpotato
+    env_file: env
     restart: always
-    environment:
-      - PUID=1001
-      - PGID=1000
-    environment:
-      - PGID=1001
-      - PUID=1000
-      - VERSION=latest
     ports:
       - 5050:5050
+    depends_on:
+      - nzbget
     volumes:
       - /etc/localtime:/etc/localtime:ro
 
@@ -44,7 +39,9 @@ services:
     container_name: plex
     image: linuxserver/plex
     restart: always
-    network_mode: "host"
+    network_mode: host
+    env_file: env
+    restart: always
     ports:
       # TCP: 32400 (for access to the Plex Media Server) [required]
       - 32400:32400
@@ -63,6 +60,10 @@ services:
       - 32414:32414/udp
       # TCP: 32469 (for access to the Plex DLNA Server)
       - 32469:32469
+    depends_on:
+      - nzbget
+      - sonarr
+      - couchpotato
     volumes:
       - /etc/localtime:/etc/localtime:ro
 
@@ -70,11 +71,11 @@ services:
     container_name: plexpy
     image: linuxserver/plexpy
     restart: always
-    environment:
-      - PUID=1001
-      - PGID=1000
+    env_file: env
     ports:
       - 8181:8181
+    depends_on:
+      - plex
     volumes:
       - /etc/localtime:/etc/localtime:ro
 
