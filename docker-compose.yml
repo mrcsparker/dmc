@@ -1,0 +1,70 @@
+version: '2'
+services:
+
+  nzbget:
+    container_name: nzbget
+    image: linuxserver/nzbget
+    environment:
+      - PUID=1001
+      - PGID=1000
+    ports:
+      - 6789:6789
+
+  sonarr:
+    container_name: sonarr
+    image: linuxserver/sonarr
+    restart: always
+    environment:
+      - PUID=1001
+      - PGID=1000
+    ports:
+      - 8989:8989
+
+  couchpotato:
+    container_name: couchpotato
+    image: linuxserver/couchpotato
+    restart: always
+    environment:
+      - PUID=1001
+      - PGID=1000
+    environment:
+      - PGID=1001
+      - PUID=1000
+      - VERSION=latest
+    ports:
+      - 5050:5050
+
+  plex:
+    container_name: plex
+    image: linuxserver/plex
+    restart: always
+    network_mode: "host"
+    ports:
+      # TCP: 32400 (for access to the Plex Media Server) [required]
+      - 32400:32400
+      # UDP: 1900 (for access to the Plex DLNA Server)
+      - 1900:1900/udp
+      # TCP: 3005 (for controlling Plex Home Theater via Plex Companion)
+      - 3005:3005
+      # UDP: 5353 (for older Bonjour/Avahi network discovery)
+      - 5353:5353/udp
+      # TCP: 8324 (for controlling Plex for Roku via Plex Companion)
+      - 8324:8324
+      # UDP: 32410, 32412, 32413, 32414 (for current GDM network discovery)
+      - 32410:32410/udp
+      - 32412:32412/udp
+      - 32413:32413/udp
+      - 32414:32414/udp
+      # TCP: 32469 (for access to the Plex DLNA Server)
+      - 32469:32469
+
+  plexpy:
+    container_name: plexpy
+    image: linuxserver/plexpy
+    restart: always
+    environment:
+      - PUID=1001
+      - PGID=1000
+    ports:
+      - 8181:8181
+
