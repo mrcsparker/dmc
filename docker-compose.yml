@@ -124,30 +124,6 @@ services:
       - ./data/config/htpcmanager:/config
       - ./data/media:/media:ro
 
-  pydio:
-    container_name: pydio
-    hostname: pydio
-    image: linuxserver/pydio
-    restart: always
-    env_file: env
-    ports:
-      - "443:443"
-    volumes:
-      - ./data/config/pydio:/config
-      - ./data/media:/data
-
-  plexrequests:
-    container_name: plexrequests
-    hostname: plexrequests
-    image: lsiodev/plexrequests
-    restart: always
-    env_file: env
-    ports:
-      - "3000:3000"
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ./data/config/plexrequests:/config
-
   transmission:
     container_name: transmission
     hostname: transmission
@@ -179,6 +155,8 @@ services:
     command:
       - -s
       - media;/mount/media;yes;no;yes;all
+      - -s
       - watch;/mount/watch;yes;no;yes;all
+      - -s
       - downloads;/mount/downloads;yes;no;yes;all
 
