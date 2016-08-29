@@ -10,6 +10,8 @@ services:
       - 6789:6789
     volumes:
       - /etc/localtime:/etc/localtime:ro
+      - ./data/config/nzbget:/config
+      - ./data/downloads/nzbget:/downloads
 
   sonarr:
     container_name: sonarr
@@ -22,6 +24,10 @@ services:
       - nzbget
     volumes:
       - /etc/localtime:/etc/localtime:ro
+      #- /dev/rtc:/dev/rtc:ro
+      - ./data/config/sonarr:/config
+      - ./data/media/tv:/tv
+      - ./data/downloads/sonarr:/downloads
 
   couchpotato:
     container_name: couchpotato
@@ -34,38 +40,46 @@ services:
       - nzbget
     volumes:
       - /etc/localtime:/etc/localtime:ro
+      - ./data/config/couchpotato:/config
+      - ./data/downloads/couchpotato:/downloads
+      - ./data/media/movies:/movies
 
   plex:
     container_name: plex
-    image: linuxserver/plex
+    image: linuxserver/plex:latest
     restart: always
-    network_mode: host
+    network_mode: "host"
     env_file: env
     restart: always
     ports:
       # TCP: 32400 (for access to the Plex Media Server) [required]
-      - 32400:32400
+      - "32400:32400"
       # UDP: 1900 (for access to the Plex DLNA Server)
-      - 1900:1900/udp
+      - "1900:1900/udp"
       # TCP: 3005 (for controlling Plex Home Theater via Plex Companion)
-      - 3005:3005
+      - "3005:3005"
       # UDP: 5353 (for older Bonjour/Avahi network discovery)
-      - 5353:5353/udp
+      - "5353:5353/udp"
       # TCP: 8324 (for controlling Plex for Roku via Plex Companion)
-      - 8324:8324
+      - "8324:8324"
       # UDP: 32410, 32412, 32413, 32414 (for current GDM network discovery)
-      - 32410:32410/udp
-      - 32412:32412/udp
-      - 32413:32413/udp
-      - 32414:32414/udp
+      - "32410:32410/udp"
+      - "32412:32412/udp"
+      - "32413:32413/udp"
+      - "32414:32414/udp"
       # TCP: 32469 (for access to the Plex DLNA Server)
-      - 32469:32469
+      - "32469:32469"
     depends_on:
       - nzbget
       - sonarr
       - couchpotato
     volumes:
       - /etc/localtime:/etc/localtime:ro
+      - ./data/config/plex:/config
+      - ./data/media/tv:/data/tv
+      - ./data/media/movies:/data/movies
+      - ./data/media/music:/data/music
+      - ./data/transcode/plex:/transcode
 
   plexpy:
     container_name: plexpy
@@ -73,9 +87,25 @@ services:
     restart: always
     env_file: env
     ports:
-      - 8181:8181
+      - "8181:8181"
     depends_on:
       - plex
     volumes:
       - /etc/localtime:/etc/localtime:ro
+      - ./data/config/plexpy:/config
+      - ./data/logs/plexpy:/logs
+
+  htpcmanager:
+    container_name: htpcmanager
+    image: linuxserver/htpcmanager
+    restart: always
+    env_file: env
+    ports:
+      - "8085:8085"
+    depends_on:
+      - nzbget
+      - sonarr
+      - couchpotato
+      - plex
+      - plexpy
 
