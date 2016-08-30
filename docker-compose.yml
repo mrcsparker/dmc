@@ -13,6 +13,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ./data/config/nzbget:/config
       - ./data/downloads:/downloads
+      - ./data/scripts:/downloads/scripts
 
   sonarr:
     container_name: sonarr
@@ -160,8 +161,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./data/config/mylar:/config
-      - ./data/downloads/blackhole:/downloads/blackhole
-      - ./data/downloads/quasar:/downloads/quasar
+      - ./data/downloads:/downloads
       - ./data/media/comics:/comics
 
   glances:
