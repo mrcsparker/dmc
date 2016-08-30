@@ -24,6 +24,7 @@ services:
       - 8989:8989
     depends_on:
       - nzbget
+      - transmission
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /dev/rtc:/dev/rtc:ro
@@ -41,6 +42,7 @@ services:
       - 5050:5050
     depends_on:
       - nzbget
+      - transmission
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./data/config/couchpotato:/config
@@ -99,30 +101,17 @@ services:
       - ./data/config/plexpy:/config
       - ./data/logs/plexpy:/logs
 
-  htpcmanager:
-    container_name: htpcmanager
-    hostname: htpcmanager
-    image: linuxserver/htpcmanager
+  muximux:
+    container_name: muximux
+    hostname: muximux
+    image: linuxserver/muximux
     restart: always
     env_file: env
     ports:
-      - "8085:8085"
-    depends_on:
-      - nzbget
-      - sonarr
-      - couchpotato
-      - plex
-      - plexpy
-    links:
-      - nzbget
-      - sonarr
-      - couchpotato
-      - plex
-      - plexpy
+      - "80:80"
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ./data/config/htpcmanager:/config
-      - ./data/media:/media:ro
+      - ./data/config/muximux:/config
 
   transmission:
     container_name: transmission
@@ -159,4 +148,33 @@ services:
       - watch;/mount/watch;yes;no;yes;all
       - -s
       - downloads;/mount/downloads;yes;no;yes;all
+
+  mylar:
+    container_name: mylar
+    hostname: mylar
+    image: linuxserver/mylar
+    restart: always
+    env_file: env
+    ports:
+      - "8090:8090"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./data/config/mylar:/config
+      - ./data/downloads/blackhole:/downloads/blackhole
+      - ./data/downloads/quasar:/downloads/quasar
+      - ./data/media/comics:/comics
+
+  glances:
+    container_name: glances
+    hostname: glances
+    image:  nicolargo/glances
+    restart: always
+    env_file: env
+    ports:
+      - "61208:61208"
+      - "61209:61209"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
 

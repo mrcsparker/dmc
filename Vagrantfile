@@ -26,7 +26,7 @@ Vagrant.configure(2) do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  config.vm.network "private_network", ip: "192.168.33.10"
+  config.vm.network "private_network", ip: "10.1.1.99"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
@@ -51,6 +51,14 @@ Vagrant.configure(2) do |config|
     vb.memory = "2048"
     vb.cpus = 2
   end
+
+  config.vm.provider "parallels" do |prl|
+    prl.name = "dmc"
+    prl.update_guest_tools = true
+    prl.memory = 2048
+    prl.cpus = 2
+  end
+
   #
   # View the documentation for the provider you are using for more
   # information on available options.
