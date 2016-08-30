@@ -12,7 +12,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./data/config/nzbget:/config
-      - ./data/downloads/nzbget:/downloads
+      - ./data/downloads:/downloads
 
   sonarr:
     container_name: sonarr
@@ -29,7 +29,7 @@ services:
       - /dev/rtc:/dev/rtc:ro
       - ./data/config/sonarr:/config
       - ./data/media/tv:/tv
-      - ./data/downloads/sonarr:/downloads
+      - ./data/downloads:/downloads
 
   couchpotato:
     container_name: couchpotato
@@ -44,7 +44,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./data/config/couchpotato:/config
-      - ./data/downloads/couchpotato:/downloads
+      - ./data/downloads:/downloads
       - ./data/media/movies:/movies
 
   plex:
@@ -137,7 +137,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./data/config/transmission:/config
-      - ./data/downloads/transmission:/downloads
+      - ./data/downloads:/downloads
       - ./data/watch/transmission:/watch
 
   samba:
