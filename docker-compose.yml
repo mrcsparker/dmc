@@ -26,7 +26,7 @@ services:
       - nzbget
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      #- /dev/rtc:/dev/rtc:ro
+      - /dev/rtc:/dev/rtc:ro
       - ./data/config/sonarr:/config
       - ./data/media/tv:/tv
       - ./data/downloads/sonarr:/downloads
